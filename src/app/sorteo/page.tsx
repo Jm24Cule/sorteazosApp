@@ -545,7 +545,7 @@ export default function SorteoPage() {
             {sorteoPhase==='rolling'&&(
               <div className="rounded-2xl border p-12 text-center" style={{background:t.surface,borderColor:t.accent,animation:'slideUp 0.3s ease'}}>
                 <div className="text-5xl mb-6">🎰</div>
-                <div className="font-extrabold animate-drum w-full px-4 overflow-hidden" style={{
+                <div className="animate-drum w-full px-4 overflow-hidden" style={{
                   color:t.winnerColor,
                   fontFamily:'"Space Grotesk", sans-serif',
                   fontSize:'clamp(1.5rem, 7vw, 3.5rem)',
