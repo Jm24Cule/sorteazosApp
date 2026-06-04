@@ -331,10 +331,13 @@ export default function SorteoPage() {
 
             {/* Hero */}
             <div className="text-center mb-10 pt-4">
-              <h2 className="font-extrabold leading-none mb-4"
-                key={theme} style={{fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
-                Sorteazos
-              </h2>
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <img src="/logo.svg" alt="Sorteazos" className="w-16 h-16 sm:w-20 sm:h-20"/>
+                <h2 className="font-extrabold leading-none"
+                  key={theme} style={{fontFamily:"'Outfit', sans-serif",fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                  Sorteazos
+                </h2>
+              </div>
               <p className="text-lg" style={{color:t.muted}}>
                 Sorteos de Instagram —{' '}
                 <span style={{color:t.text,fontWeight:700}}>gratis, sin registro, sin límites.</span>
@@ -567,7 +570,7 @@ export default function SorteoPage() {
             {sorteoPhase==='winner'&&winner&&(
               <>
                 <div className="rounded-2xl border-2 p-8 text-center mb-5 relative overflow-hidden"
-                  style={{background:t.surface,borderColor:'#f97316',animation:'winnerReveal 0.6s cubic-bezier(0.34,1.56,0.64,1)'}}>
+                  style={{background:t.surface,borderColor:t.accent,animation:'winnerReveal 0.6s cubic-bezier(0.34,1.56,0.64,1)'}}>
                   <div className="absolute inset-0 pointer-events-none"
                     style={{background:'radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.1) 0%,transparent 65%)'}}/>
                   <div className="text-6xl mb-4">🏆</div>
