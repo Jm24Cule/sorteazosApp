@@ -528,8 +528,8 @@ export default function SorteoPage() {
             {sorteoPhase==='rolling'&&(
               <div className="rounded-2xl border p-12 text-center" style={{background:t.surface,borderColor:'#f97316',animation:'slideUp 0.3s ease'}}>
                 <div className="text-5xl mb-6">🎰</div>
-                <div className="text-5xl font-extrabold font-mono animate-drum" style={{color:'#fbbf24',letterSpacing:'-2px'}}>
-                  {drumName}
+                <div className="text-5xl font-extrabold animate-drum" style={{color:'#fbbf24',letterSpacing:'-2px',fontFamily:'Syne, sans-serif'}}>
+                  <span style={{opacity:0.5}}>@</span>{drumName.replace('@','')}
                 </div>
                 <div className="text-sm uppercase tracking-widest mt-5" style={{color:t.muted}}>
                   ✨ sorteando entre {validParticipants.length} participantes...
@@ -546,8 +546,8 @@ export default function SorteoPage() {
                     style={{background:'radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.1) 0%,transparent 65%)'}}/>
                   <div className="text-6xl mb-4">🏆</div>
                   <div className="text-xs font-bold tracking-widest uppercase mb-2" style={{color:'#f97316'}}>Ganador/a</div>
-                  <div className="font-extrabold mb-3" style={{fontSize:'clamp(2rem,9vw,3.2rem)',color:'#fbbf24',letterSpacing:'-2px'}}>
-                    @{winner.username}
+                  <div className="font-extrabold mb-3" style={{fontSize:'clamp(2rem,9vw,3.2rem)',color:'#fbbf24',letterSpacing:'-2px',fontFamily:'Syne, sans-serif'}}>
+                    <span style={{opacity:0.5,fontWeight:800}}>@</span>{winner.username}
                   </div>
                   <div className="font-mono text-sm mx-auto max-w-sm italic mb-6" style={{color:t.muted}}>
                     &ldquo;{winner.comment.text.substring(0,100)}{winner.comment.text.length>100?'…':''}&rdquo;
