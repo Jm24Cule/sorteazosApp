@@ -196,7 +196,7 @@ export default function SorteoPage() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const t = {
-    bg: isDark?'#141414':'#f7f7f8',
+    bg: isDark?'#1c1c1e':'#f7f7f8',
     surface: isDark?'#111113':'#ffffff',
     surface2: isDark?'#18181b':'#f0f0f2',
     border: isDark?'#27272a':'#e4e4e7',
@@ -204,6 +204,19 @@ export default function SorteoPage() {
     muted: isDark?'#71717a':'#71717a',
     inputBg: isDark?'#18181b':'#f4f4f5',
     inputBorder: isDark?'#3f3f46':'#d4d4d8',
+    // Accent palette: dark=orange/gold, light=purple/teal
+    accent: isDark?'#f97316':'#7c3aed',
+    accent2: isDark?'#fb923c':'#6d28d9',
+    gold: isDark?'#fbbf24':'#0891b2',
+    gradStart: isDark?'#f97316':'#7c3aed',
+    gradEnd: isDark?'#fbbf24':'#0891b2',
+    grad: isDark
+      ? 'linear-gradient(135deg,#f97316 0%,#fbbf24 50%,#f97316 100%)'
+      : 'linear-gradient(135deg,#7c3aed 0%,#0891b2 50%,#7c3aed 100%)',
+    donateGlow: isDark?'rgba(249,115,22,0.4)':'rgba(124,58,237,0.4)',
+    accentBg: isDark?'rgba(249,115,22,0.08)':'rgba(124,58,237,0.07)',
+    accentBorder: isDark?'rgba(249,115,22,0.3)':'rgba(124,58,237,0.3)',
+    winnerColor: isDark?'#fbbf24':'#0891b2',
   }
   const inp = { background:t.inputBg, border:`1px solid ${t.inputBorder}`, color:t.text }
 
@@ -319,7 +332,7 @@ export default function SorteoPage() {
             {/* Hero */}
             <div className="text-center mb-10 pt-4">
               <h2 className="font-extrabold leading-none mb-4"
-                style={{fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:'linear-gradient(135deg,#f97316 0%,#fbbf24 50%,#f97316 100%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                style={{fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                 Sorteazos
               </h2>
               <p className="text-lg" style={{color:t.muted}}>
@@ -343,7 +356,7 @@ export default function SorteoPage() {
               </p>
               {/* Donation */}
               <div className="rounded-xl p-4 flex items-center gap-4"
-                style={{background:isDark?'rgba(249,115,22,0.08)':'rgba(249,115,22,0.07)',border:'1.5px solid rgba(249,115,22,0.3)'}}>
+                style={{background:t.accentBg,border:`1.5px solid ${t.accentBorder}`}}>
                 <span className="text-3xl flex-shrink-0">☕</span>
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-sm mb-0.5" style={{color:t.text}}>¿Te resulta útil? ¡Invítame a un café!</div>
@@ -352,7 +365,8 @@ export default function SorteoPage() {
                 <a href="https://paypal.me/juanm95" target="_blank" rel="noopener noreferrer"
                   className="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
                   style={{background:'#0070ba',color:'white',textDecoration:'none',boxShadow:'0 4px 14px rgba(0,112,186,0.35)'}}>
-                  Donar 💙
+                  <svg width="16" height="18" viewBox="0 0 24 28" fill="white" style={{flexShrink:0}}><path d="M19.5 3.5C18.3 1.9 15.9 1 13 1H5.5C4.7 1 4 1.6 3.9 2.4L1 21.6c-.1.6.4 1.2 1 1.2h5l1.3-8.1-.1.4C8.4 14.3 9.1 13.7 9.9 13.7h2c5.4 0 9.6-2.2 10.8-8.5.1-.3.1-.6.1-.9-.3-.3-.3-.5-.3-.8z"/><path d="M19.8 5.7c-.1.5-.3 1-.5 1.5-1.4 7.2-6.3 9.7-12.5 9.7H4.5L3.1 26h4.5c.7 0 1.3-.5 1.4-1.2l.1-.3.9-5.4.1-.3c.1-.7.7-1.2 1.4-1.2h.9c5.7 0 10.1-2.3 11.4-9 .5-2.7.3-5-1-6.9z"/></svg>
+                  Donar
                 </a>
               </div>
             </div>
@@ -360,7 +374,7 @@ export default function SorteoPage() {
             {/* Connect button */}
             <button onClick={connectInstagram} disabled={connecting}
               className="w-full py-5 rounded-2xl font-extrabold text-lg flex items-center justify-center gap-3 transition-all hover:-translate-y-1 disabled:opacity-70 disabled:translate-y-0"
-              style={{background:'linear-gradient(135deg,#f97316,#fbbf24)',color:'white',boxShadow:'0 6px 30px rgba(249,115,22,0.4)',letterSpacing:'-0.3px'}}>
+              style={{background:t.grad,color:'white',boxShadow:`0 6px 30px ${t.donateGlow}`,letterSpacing:'-0.3px'}}>
               {connecting?(
                 <>
                   <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
@@ -393,7 +407,7 @@ export default function SorteoPage() {
             {/* Subtitle */}
             <div className="flex items-start justify-between mb-6 pt-4">
               <h1 className="font-extrabold leading-none"
-                style={{fontSize:'clamp(2.8rem,11vw,4.5rem)',letterSpacing:'-3px',background:'linear-gradient(135deg,#f97316 0%,#fbbf24 50%,#f97316 100%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                style={{fontSize:'clamp(2.8rem,11vw,4.5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                 Sorteazos
               </h1>
               <button onClick={disconnect} className="mt-2 text-xs px-3 py-1.5 rounded-lg border transition-colors flex-shrink-0"
@@ -406,12 +420,12 @@ export default function SorteoPage() {
             {profile&&(
               <div className="rounded-2xl border p-4 mb-6 flex items-center gap-4"
                 style={{background:t.surface,borderColor:t.border}}>
-                <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0" style={{border:'2.5px solid #f97316'}}>
+                <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0" style={{border:`2.5px solid ${t.accent}`}}>
                   <Image src={profile.avatar} alt={profile.name} width={56} height={56} className="object-cover w-full h-full"/>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-base" style={{color:t.text}}>{profile.name}</div>
-                  <div className="text-sm font-mono" style={{color:'#f97316'}}>@{profile.username}</div>
+                  <div className="text-sm font-mono" style={{color:t.accent}}>@{profile.username}</div>
                   <div className="text-xs mt-0.5" style={{color:t.muted}}>Cuenta conectada ✓</div>
                 </div>
                 {comments.length>0&&(
@@ -442,7 +456,7 @@ export default function SorteoPage() {
                       onChange={e=>setPostUrl(e.target.value)} onKeyDown={e=>e.key==='Enter'&&loadFromApi()}/>
                     <button onClick={loadFromApi} disabled={loadingApi}
                       className="px-5 py-3 rounded-xl text-sm font-bold disabled:opacity-50 flex-shrink-0"
-                      style={{background:'#f97316',color:'white'}}>
+                      style={{background:t.accent,color:'white'}}>
                       {loadingApi?'⏳':'Cargar'}
                     </button>
                   </div>
@@ -466,7 +480,7 @@ export default function SorteoPage() {
                   <button onClick={()=>setShowFilters(v=>!v)}
                     className="w-full px-5 py-4 flex items-center justify-between transition-colors"
                     style={{color:t.text}}>
-                    <span className="text-sm font-bold" style={{color:'#f97316'}}>⚙️ Requisitos del sorteo</span>
+                    <span className="text-sm font-bold" style={{color:t.accent}}>⚙️ Requisitos del sorteo</span>
                     <span style={{color:t.muted,fontSize:12}}>{showFilters?'▲':'▼'}</span>
                   </button>
                   {showFilters&&(
@@ -517,7 +531,7 @@ export default function SorteoPage() {
                 {comments.length>0&&(
                   <button onClick={startSorteo}
                     className="w-full py-6 rounded-2xl text-xl font-extrabold tracking-tight transition-all hover:-translate-y-1 active:translate-y-0"
-                    style={{background:'linear-gradient(135deg,#f97316,#fbbf24)',color:'white',boxShadow:'0 6px 30px rgba(249,115,22,0.4)',letterSpacing:'-0.5px'}}>
+                    style={{background:t.grad,color:'white',boxShadow:`0 6px 30px ${t.donateGlow}`,letterSpacing:'-0.5px'}}>
                     🎲 REALIZAR SORTEO
                   </button>
                 )}
@@ -526,10 +540,10 @@ export default function SorteoPage() {
 
             {/* ── ROLLING ── */}
             {sorteoPhase==='rolling'&&(
-              <div className="rounded-2xl border p-12 text-center" style={{background:t.surface,borderColor:'#f97316',animation:'slideUp 0.3s ease'}}>
+              <div className="rounded-2xl border p-12 text-center" style={{background:t.surface,borderColor:t.accent,animation:'slideUp 0.3s ease'}}>
                 <div className="text-5xl mb-6">🎰</div>
                 <div className="font-extrabold animate-drum w-full px-4 overflow-hidden" style={{
-                  color:'#fbbf24',
+                  color:t.winnerColor,
                   fontFamily:'"Space Grotesk", sans-serif',
                   fontSize:'clamp(1.5rem, 7vw, 3.5rem)',
                   letterSpacing:'-1px',
@@ -554,17 +568,20 @@ export default function SorteoPage() {
                   <div className="absolute inset-0 pointer-events-none"
                     style={{background:'radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.1) 0%,transparent 65%)'}}/>
                   <div className="text-6xl mb-4">🏆</div>
-                  <div className="text-xs font-bold tracking-widest uppercase mb-2" style={{color:'#f97316'}}>Ganador/a</div>
-                  <div className="font-extrabold mb-3 w-full px-4 overflow-hidden" style={{
-                    color:'#fbbf24',
+                  <div className="text-xs font-bold tracking-widest uppercase mb-2" style={{color:t.accent}}>Ganador/a</div>
+                  <div className="w-full px-4 overflow-hidden" style={{
+                    color:t.winnerColor,
                     fontFamily:'"Space Grotesk", sans-serif',
-                    fontWeight: 800,
+                    fontWeight: 400,
                     fontSize:'clamp(1.8rem, 7vw, 3.2rem)',
-                    letterSpacing:'-1px',
+                    letterSpacing:'-0.5px',
                     whiteSpace:'nowrap',
                     textOverflow:'ellipsis',
                     textAlign:'center',
                     maxWidth:'100%',
+                    marginBottom:'0.75rem',
+                    animation:'winnerBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards, winnerGlow 1.2s ease-out forwards',
+                    textShadow:'0 0 0px rgba(251,191,36,0)',
                   }}>
                     @{winner.username}
                   </div>
@@ -572,8 +589,8 @@ export default function SorteoPage() {
                     &ldquo;{winner.comment.text.substring(0,100)}{winner.comment.text.length>100?'…':''}&rdquo;
                   </div>
                   <div className="rounded-xl px-5 py-4 text-left mb-4"
-                    style={{background:'rgba(249,115,22,0.08)',border:'1px solid rgba(249,115,22,0.25)'}}>
-                    <strong className="block mb-2" style={{color:'#fb923c'}}>✅ Antes de entregar el premio verifica:</strong>
+                    style={{background:t.accentBg,border:`1px solid ${t.accentBorder}`}}>
+                    <strong className="block mb-2" style={{color:t.accent2}}>✅ Antes de entregar el premio verifica:</strong>
                     <div className="space-y-2">
                       <div className="flex gap-2 text-sm" style={{color:t.muted}}>
                         <span>📸</span><span>Compartió el post en Stories (pide captura si cuenta privada)</span>
@@ -639,7 +656,7 @@ export default function SorteoPage() {
 
       {/* ── FOOTER ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40"
-        style={{background:isDark?'rgba(20,20,20,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderTop:`1px solid ${t.border}`}}>
+        style={{background:isDark?'rgba(28,28,30,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderTop:`1px solid ${t.border}`}}>
         <div className="max-w-2xl mx-auto px-5 py-4 sm:py-5">
           <div className="flex items-center justify-between gap-4">
             {/* Left — Profiles */}
@@ -650,10 +667,10 @@ export default function SorteoPage() {
               ].map(c=>(
                 <a key={c.handle} href={c.href} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-2 sm:gap-3 transition-opacity hover:opacity-75">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden flex-shrink-0" style={{border:'2px solid #f97316'}}>
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden flex-shrink-0" style={{border:`2px solid ${t.accent}`}}>
                     <Image src={c.src} alt={c.handle} width={44} height={44} className="object-cover w-full h-full"/>
                   </div>
-                  <span className="text-xs sm:text-sm font-mono hidden sm:block" style={{color:'#f97316'}}>{c.handle}</span>
+                  <span className="text-xs sm:text-sm font-mono hidden sm:block" style={{color:t.accent}}>{c.handle}</span>
                 </a>
               ))}
             </div>

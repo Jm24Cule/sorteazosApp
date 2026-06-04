@@ -94,3 +94,32 @@ body {
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 16px);
 }
+
+/* ── Winner animations ── */
+@keyframes winnerBounce {
+  0%   { transform: scale(0.7) translateY(16px); opacity: 0; }
+  60%  { transform: scale(1.06) translateY(-4px); }
+  80%  { transform: scale(0.97); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes winnerGlow {
+  0%   { text-shadow: 0 0 0px rgba(251,191,36,0); }
+  30%  { text-shadow: 0 0 30px rgba(251,191,36,0.9), 0 0 60px rgba(251,191,36,0.5); }
+  100% { text-shadow: 0 0 8px rgba(251,191,36,0.2); }
+}
+
+/* ── Light mode: teal-purple palette ── */
+@media (prefers-color-scheme: light) {}
+
+/* Applied via data-theme or class — we use inline styles so override key colors */
+.light-mode-accent {
+  --lm-primary: #7c3aed;
+  --lm-secondary: #0891b2;
+}
+
+/* Light mode gradient overrides - target the gradient text elements */
+html body [data-theme="light"] h1,
+.theme-light h1 {
+  background: linear-gradient(135deg, #7c3aed 0%, #0891b2 50%, #7c3aed 100%) !important;
+}
