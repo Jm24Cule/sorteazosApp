@@ -306,28 +306,7 @@ export default function SorteoPage() {
   return (
     <div className="min-h-screen transition-colors duration-300" style={{background:t.bg,color:t.text}}>
 
-      {/* ── TOP BAR ── */}
-      <div className="sticky top-0 z-40 border-b" style={{background:isDark?'rgba(9,9,11,0.9)':'rgba(247,247,248,0.9)',backdropFilter:'blur(12px)',borderColor:t.border}}>
-        <div className="max-w-2xl mx-auto px-5 h-14 flex items-center justify-between">
-          <h1 className="font-extrabold text-xl"
-            style={{background:'linear-gradient(135deg,#f97316,#fbbf24)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',letterSpacing:'-0.5px'}}>
-            Sorteazos
-          </h1>
-          <div className="flex items-center gap-2">
-            {profile&&(
-              <button onClick={disconnect} className="text-xs px-3 py-1.5 rounded-lg border transition-colors"
-                style={{borderColor:t.border,color:t.muted}}>
-                Desconectar
-              </button>
-            )}
-            <button onClick={()=>setTheme(isDark?'light':'dark')}
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-all"
-              style={{background:t.surface2,border:`1px solid ${t.border}`}}>
-              {isDark?'☀️':'🌙'}
-            </button>
-          </div>
-        </div>
-      </div>
+
 
       <div className="max-w-2xl mx-auto px-5 py-8 pb-32">
 
@@ -412,11 +391,15 @@ export default function SorteoPage() {
           <div style={{animation:'slideUp 0.4s ease forwards'}}>
 
             {/* Subtitle */}
-            <div className="mb-6">
-              <p className="text-base font-medium" style={{color:t.muted}}>
-                Sorteos de Instagram —{' '}
-                <span style={{color:t.text,fontWeight:700}}>gratis, sin registro, sin límites.</span>
-              </p>
+            <div className="flex items-start justify-between mb-6 pt-4">
+              <h1 className="font-extrabold leading-none"
+                style={{fontSize:'clamp(2.8rem,11vw,4.5rem)',letterSpacing:'-3px',background:'linear-gradient(135deg,#f97316 0%,#fbbf24 50%,#f97316 100%)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                Sorteazos
+              </h1>
+              <button onClick={disconnect} className="mt-2 text-xs px-3 py-1.5 rounded-lg border transition-colors flex-shrink-0"
+                style={{borderColor:t.border,color:t.muted}}>
+                Desconectar
+              </button>
             </div>
 
             {/* Profile card */}
@@ -452,63 +435,23 @@ export default function SorteoPage() {
             {sorteoPhase==='idle'&&(
               <>
                 <section className="rounded-2xl border p-5 mb-4" style={{background:t.surface,borderColor:t.border}}>
-                  {/* Tabs */}
-                  <div className="flex gap-1 p-1 rounded-xl mb-5" style={{background:t.surface2}}>
-                    {(['url','paste','file'] as const).map(m=>(
-                      <button key={m} onClick={()=>setImportMode(m)}
-                        className="flex-1 py-2 rounded-lg text-xs font-bold transition-all"
-                        style={importMode===m?{background:'#f97316',color:'white'}:{color:t.muted}}>
-                        {m==='url'?'🔗 URL':m==='paste'?'📋 Texto':'📁 Archivo'}
-                      </button>
-                    ))}
+                  <label className="block text-xs font-semibold mb-3" style={{color:t.muted}}>🔗 URL DEL POST CON EL SORTEO</label>
+                  <div className="flex gap-2">
+                    <input className="flex-1 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none transition-colors"
+                      style={inp} placeholder="https://www.instagram.com/p/..." value={postUrl}
+                      onChange={e=>setPostUrl(e.target.value)} onKeyDown={e=>e.key==='Enter'&&loadFromApi()}/>
+                    <button onClick={loadFromApi} disabled={loadingApi}
+                      className="px-5 py-3 rounded-xl text-sm font-bold disabled:opacity-50 flex-shrink-0"
+                      style={{background:'#f97316',color:'white'}}>
+                      {loadingApi?'⏳':'Cargar'}
+                    </button>
                   </div>
-
-                  {importMode==='url'&&(
-                    <div>
-                      <label className="block text-xs font-semibold mb-2" style={{color:t.muted}}>URL del post de Instagram</label>
-                      <div className="flex gap-2">
-                        <input className="flex-1 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none transition-colors"
-                          style={inp} placeholder="https://www.instagram.com/p/..." value={postUrl}
-                          onChange={e=>setPostUrl(e.target.value)} onKeyDown={e=>e.key==='Enter'&&loadFromApi()}/>
-                        <button onClick={loadFromApi} disabled={loadingApi}
-                          className="px-5 py-3 rounded-xl text-sm font-bold disabled:opacity-50 flex-shrink-0"
-                          style={{background:'#f97316',color:'white'}}>
-                          {loadingApi?'⏳':'Cargar'}
-                        </button>
-                      </div>
-                      {apiError&&(
-                        <div className="mt-3 p-3 rounded-xl text-sm border"
-                          style={{background:'rgba(248,113,113,0.08)',borderColor:'rgba(248,113,113,0.25)',color:'#f87171'}}>
-                          ⚠️ {apiError}
-                        </div>
-                      )}
+                  {apiError&&(
+                    <div className="mt-3 p-3 rounded-xl text-sm border"
+                      style={{background:'rgba(248,113,113,0.08)',borderColor:'rgba(248,113,113,0.25)',color:'#f87171'}}>
+                      ⚠️ {apiError}
                     </div>
                   )}
-
-                  {importMode==='paste'&&(
-                    <div>
-                      <textarea className="w-full rounded-xl px-4 py-3 text-sm font-mono focus:outline-none transition-colors resize-y"
-                        style={inp} rows={7} placeholder={"@usuario1 Menciono a @amiga1 y @amiga2\n@usuario2 Me apunto! @pedro @maria"}
-                        value={rawText} onChange={e=>setRawText(e.target.value)}/>
-                      <p className="text-xs mt-1.5" style={{color:t.muted}}>Cada línea = un comentario.</p>
-                      <button onClick={loadFromPaste} className="mt-3 w-full py-3 rounded-xl text-sm font-bold"
-                        style={{background:'#f97316',color:'white'}}>Cargar comentarios</button>
-                    </div>
-                  )}
-
-                  {importMode==='file'&&(
-                    <div>
-                      <input ref={fileRef} type="file" accept=".txt,.csv" className="hidden" onChange={loadFromFile}/>
-                      <button onClick={()=>fileRef.current?.click()}
-                        className="w-full py-10 rounded-2xl border-2 border-dashed transition-colors"
-                        style={{borderColor:t.border,color:t.muted}}>
-                        <div className="text-4xl mb-2">📁</div>
-                        <div className="font-bold">Seleccionar archivo</div>
-                        <div className="text-xs mt-1 opacity-60">TXT o CSV</div>
-                      </button>
-                    </div>
-                  )}
-
                   {comments.length>0&&(
                     <div className="mt-4 flex items-center gap-2 px-4 py-3 rounded-xl text-sm"
                       style={{background:'rgba(74,222,128,0.08)',border:'1px solid rgba(74,222,128,0.2)',color:'#4ade80'}}>
@@ -528,20 +471,12 @@ export default function SorteoPage() {
                   </button>
                   {showFilters&&(
                     <div className="px-5 pb-5">
-                      <div className="grid grid-cols-2 gap-3 mb-5">
-                        <div>
-                          <label className="block text-xs font-semibold mb-1.5" style={{color:t.muted}}>Mínimo menciones</label>
-                          <input type="number" min={0} max={10}
-                            className="w-full rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none"
-                            style={inp} value={filters.minMentions}
-                            onChange={e=>setFilters(f=>({...f,minMentions:+e.target.value}))}/>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-semibold mb-1.5" style={{color:t.muted}}>Tu usuario (excluirte)</label>
-                          <input type="text" className="w-full rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none"
-                            style={inp} value={filters.organizerUsername} placeholder="sin @"
-                            onChange={e=>setFilters(f=>({...f,organizerUsername:e.target.value}))}/>
-                        </div>
+                      <div className="mb-5">
+                        <label className="block text-xs font-semibold mb-1.5" style={{color:t.muted}}>Mínimo de menciones requeridas</label>
+                        <input type="number" min={0} max={10}
+                          className="w-full rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none"
+                          style={inp} value={filters.minMentions}
+                          onChange={e=>setFilters(f=>({...f,minMentions:+e.target.value}))}/>
                       </div>
                       <div className="mb-4">
                         <label className="block text-xs font-semibold mb-1.5" style={{color:t.muted}}>Hashtags requeridos <span className="opacity-50">(Enter)</span></label>
@@ -557,8 +492,7 @@ export default function SorteoPage() {
                       </div>
                       <Toggle theme={theme} checked={filters.excludeDuplicates} onChange={v=>setFilters(f=>({...f,excludeDuplicates:v}))}
                         label="Excluir duplicados" desc="Solo cuenta el primer comentario por usuario"/>
-                      <Toggle theme={theme} checked={filters.excludeOrganizer} onChange={v=>setFilters(f=>({...f,excludeOrganizer:v}))}
-                        label="Excluir al organizador" desc="Tu usuario no puede ganar"/>
+
                       <Toggle theme={theme} checked={filters.requireDistinctMentions} onChange={v=>setFilters(f=>({...f,requireDistinctMentions:v}))}
                         label="Menciones distintas" desc="No vale mencionar al mismo usuario dos veces"/>
                       <Toggle theme={theme} checked={filters.requireFollow} onChange={v=>setFilters(f=>({...f,requireFollow:v}))}
@@ -687,31 +621,37 @@ export default function SorteoPage() {
       {/* ── FOOTER ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40"
         style={{background:isDark?'rgba(9,9,11,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderTop:`1px solid ${t.border}`}}>
-        <div className="max-w-2xl mx-auto px-5 py-3">
-          <div className="flex items-center justify-between gap-3">
-            {/* Profiles */}
-            <div className="flex items-center gap-3">
+        <div className="max-w-2xl mx-auto px-5 py-4 sm:py-5">
+          <div className="flex items-center justify-between gap-4">
+            {/* Left — Profiles */}
+            <div className="flex items-center gap-3 sm:gap-5">
               {[
                 {href:'https://www.instagram.com/jagarcia95',src:'/juan.jpeg',handle:'@jagarcia95'},
                 {href:'https://www.instagram.com/la_nana_de_nala',src:'/nana.png',handle:'@la_nana_de_nala'},
               ].map(c=>(
                 <a key={c.handle} href={c.href} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 transition-opacity hover:opacity-75">
-                  <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0" style={{border:'1.5px solid #f97316'}}>
-                    <Image src={c.src} alt={c.handle} width={32} height={32} className="object-cover w-full h-full"/>
+                  className="flex items-center gap-2 sm:gap-3 transition-opacity hover:opacity-75">
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden flex-shrink-0" style={{border:'2px solid #f97316'}}>
+                    <Image src={c.src} alt={c.handle} width={44} height={44} className="object-cover w-full h-full"/>
                   </div>
-                  <span className="text-xs font-mono hidden sm:block" style={{color:'#f97316'}}>{c.handle}</span>
+                  <span className="text-xs sm:text-sm font-mono hidden sm:block" style={{color:'#f97316'}}>{c.handle}</span>
                 </a>
               ))}
             </div>
-            {/* Center — terms */}
-            <button onClick={()=>setShowTerms(v=>!v)} className="text-xs underline underline-offset-2 flex-shrink-0" style={{color:t.muted}}>
-              T&amp;C
-            </button>
-            {/* Copyright */}
-            <p className="text-xs" style={{color:t.muted}}>
-              © {new Date().getFullYear()} Sorteazos
-            </p>
+            {/* Right — T&C + copyright + theme */}
+            <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+              <button onClick={()=>setShowTerms(v=>!v)}
+                className="text-xs sm:text-sm underline underline-offset-2 transition-colors hover:opacity-80"
+                style={{color:t.muted}}>
+                T&amp;C
+              </button>
+              <span className="text-xs sm:text-sm" style={{color:t.muted}}>© {new Date().getFullYear()} Sorteazos</span>
+              <button onClick={()=>setTheme(isDark?'light':'dark')}
+                className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-lg transition-all hover:scale-110"
+                style={{background:t.surface2,border:`1px solid ${t.border}`}}>
+                {isDark?'☀️':'🌙'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
