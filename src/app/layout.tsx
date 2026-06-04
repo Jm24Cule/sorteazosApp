@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Herramienta gratuita para hacer sorteos en Instagram. Sin registro, sin límites, sin suscripción.',
   icons: {
     icon: '/logo.svg',
-    apple: '/logo.svg',
+    apple: '/apple-touch-icon.png',
   },
 }
 
