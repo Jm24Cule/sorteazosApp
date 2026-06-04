@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Sorteo Instagram',
-  description: 'Herramienta de sorteos para Instagram — La Ñañá de Nala',
+  title: 'Sorteazos',
+  description: 'Sorteazos — Herramienta de sorteos para Instagram de La Ñañá de Nala',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

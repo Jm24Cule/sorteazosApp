@@ -1,4 +1,4 @@
-# 🎁 Sorteo Instagram — La Ñañá de Nala
+# 🎁 Sorteazos — La Ñañá de Nala
 
 Herramienta propia para realizar sorteos en Instagram sin depender de apps de terceros.
 
@@ -16,13 +16,13 @@ Herramienta propia para realizar sorteos en Instagram sin depender de apps de te
 ```bash
 git init
 git add .
-git commit -m "feat: sorteo instagram inicial"
-gh repo create sorteo-instagram --private --push --source=.
+git commit -m "feat: sorteazos inicial"
+gh repo create sorteazos --private --push --source=.
 ```
 
 ### 2. Importa en Vercel
 - Ve a [vercel.com/new](https://vercel.com/new)
-- Selecciona el repo `sorteo-instagram`
+- Selecciona el repo `sorteazos`
 - Framework: **Next.js** (detección automática)
 - Añade las variables de entorno (ver paso 3)
 - Deploy ✓
