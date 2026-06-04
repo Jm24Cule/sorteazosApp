@@ -1,9 +1,16 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Sorteazos',
-  description: 'Sorteazos — Herramienta de sorteos para Instagram de La Ñañá de Nala',
+  title: 'Sorteazos — Sorteos de Instagram gratis',
+  description: 'Herramienta gratuita para hacer sorteos en Instagram. Sin registro, sin límites, sin suscripción.',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
