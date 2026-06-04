@@ -331,13 +331,10 @@ export default function SorteoPage() {
 
             {/* Hero */}
             <div className="text-center mb-10 pt-4">
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <img src="/logo.svg" alt="Sorteazos" className="w-16 h-16 sm:w-20 sm:h-20"/>
-                <h2 className="font-extrabold leading-none"
-                  key={theme} style={{fontFamily:"'Outfit', sans-serif",fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
-                  Sorteazos
-                </h2>
-              </div>
+              <h2 className="font-extrabold leading-none mb-4"
+                key={theme} style={{fontFamily:"'Outfit', sans-serif",fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                Sorteazos
+              </h2>
               <p className="text-lg" style={{color:t.muted}}>
                 Sorteos de Instagram —{' '}
                 <span style={{color:t.text,fontWeight:700}}>gratis, sin registro, sin límites.</span>

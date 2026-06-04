@@ -4,6 +4,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Sorteazos — Sorteos de Instagram gratis',
   description: 'Herramienta gratuita para hacer sorteos en Instagram. Sin registro, sin límites, sin suscripción.',
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
 }
 
 export const viewport: Viewport = {
