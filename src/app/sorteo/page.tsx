@@ -196,7 +196,7 @@ export default function SorteoPage() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const t = {
-    bg: isDark?'#09090b':'#f7f7f8',
+    bg: isDark?'#141414':'#f7f7f8',
     surface: isDark?'#111113':'#ffffff',
     surface2: isDark?'#18181b':'#f0f0f2',
     border: isDark?'#27272a':'#e4e4e7',
@@ -528,7 +528,16 @@ export default function SorteoPage() {
             {sorteoPhase==='rolling'&&(
               <div className="rounded-2xl border p-12 text-center" style={{background:t.surface,borderColor:'#f97316',animation:'slideUp 0.3s ease'}}>
                 <div className="text-5xl mb-6">🎰</div>
-                <div className="text-5xl font-extrabold animate-drum" style={{color:'#fbbf24',letterSpacing:'-2px',fontFamily:'"Space Grotesk", sans-serif'}}>
+                <div className="font-extrabold animate-drum w-full px-4 overflow-hidden" style={{
+                  color:'#fbbf24',
+                  fontFamily:'"Space Grotesk", sans-serif',
+                  fontSize:'clamp(1.5rem, 7vw, 3.5rem)',
+                  letterSpacing:'-1px',
+                  whiteSpace:'nowrap',
+                  textOverflow:'ellipsis',
+                  textAlign:'center',
+                  maxWidth:'100%',
+                }}>
                   {drumName}
                 </div>
                 <div className="text-sm uppercase tracking-widest mt-5" style={{color:t.muted}}>
@@ -546,7 +555,17 @@ export default function SorteoPage() {
                     style={{background:'radial-gradient(ellipse at 50% 0%,rgba(249,115,22,0.1) 0%,transparent 65%)'}}/>
                   <div className="text-6xl mb-4">🏆</div>
                   <div className="text-xs font-bold tracking-widest uppercase mb-2" style={{color:'#f97316'}}>Ganador/a</div>
-                  <div className="font-extrabold mb-3" style={{fontSize:'clamp(2rem,9vw,3.2rem)',color:'#fbbf24',letterSpacing:'-2px',fontFamily:'"Space Grotesk", sans-serif'}}>
+                  <div className="font-extrabold mb-3 w-full px-4 overflow-hidden" style={{
+                    color:'#fbbf24',
+                    fontFamily:'"Space Grotesk", sans-serif',
+                    fontWeight: 800,
+                    fontSize:'clamp(1.8rem, 7vw, 3.2rem)',
+                    letterSpacing:'-1px',
+                    whiteSpace:'nowrap',
+                    textOverflow:'ellipsis',
+                    textAlign:'center',
+                    maxWidth:'100%',
+                  }}>
                     @{winner.username}
                   </div>
                   <div className="font-mono text-sm mx-auto max-w-sm italic mb-6" style={{color:t.muted}}>
@@ -620,7 +639,7 @@ export default function SorteoPage() {
 
       {/* ── FOOTER ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40"
-        style={{background:isDark?'rgba(9,9,11,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderTop:`1px solid ${t.border}`}}>
+        style={{background:isDark?'rgba(20,20,20,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderTop:`1px solid ${t.border}`}}>
         <div className="max-w-2xl mx-auto px-5 py-4 sm:py-5">
           <div className="flex items-center justify-between gap-4">
             {/* Left — Profiles */}

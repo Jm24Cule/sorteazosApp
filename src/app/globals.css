@@ -5,8 +5,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Space+Grotesk:wght@700;800&display=swap');
 
 :root {
-  --bg: #09090b;
-  --surface: #111113;
+  --bg: #141416;
+  --surface: #1c1c1f;
   --surface2: #18181b;
   --border: #27272a;
   --accent: #f97316;
@@ -28,8 +28,9 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  /* Prevent iOS bounce */
   overscroll-behavior: none;
+  /* Subtle noise texture */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
 .mono { font-family: 'DM Mono', monospace; }
@@ -62,6 +63,13 @@ body {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes winnerBounce {
+  0%   { transform: scale(0.5) translateY(10px); opacity: 0; }
+  60%  { transform: scale(1.08) translateY(-4px); }
+  80%  { transform: scale(0.97) translateY(2px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 @keyframes pulse-glow {
