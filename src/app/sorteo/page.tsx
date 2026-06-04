@@ -429,7 +429,7 @@ export default function SorteoPage() {
                 </div>
                 {comments.length>0&&(
                   <div className="text-right flex-shrink-0">
-                    <div className="font-bold text-lg" style={{color:'#4ade80'}}>{comments.length}</div>
+                    <div className="font-bold text-lg" style={{color:isDark?'#4ade80':t.accent}}>{comments.length}</div>
                     <div className="text-xs" style={{color:t.muted}}>comentarios</div>
                   </div>
                 )}
