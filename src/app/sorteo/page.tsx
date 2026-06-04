@@ -332,7 +332,7 @@ export default function SorteoPage() {
             {/* Hero */}
             <div className="text-center mb-10 pt-4">
               <h2 className="font-extrabold leading-none mb-4"
-                style={{fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                key={theme} style={{fontSize:'clamp(2.8rem,12vw,5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                 Sorteazos
               </h2>
               <p className="text-lg" style={{color:t.muted}}>
@@ -365,8 +365,7 @@ export default function SorteoPage() {
                 <a href="https://paypal.me/juanm95" target="_blank" rel="noopener noreferrer"
                   className="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
                   style={{background:'#0070ba',color:'white',textDecoration:'none',boxShadow:'0 4px 14px rgba(0,112,186,0.35)'}}>
-                  <svg width="16" height="18" viewBox="0 0 24 28" fill="white" style={{flexShrink:0}}><path d="M19.5 3.5C18.3 1.9 15.9 1 13 1H5.5C4.7 1 4 1.6 3.9 2.4L1 21.6c-.1.6.4 1.2 1 1.2h5l1.3-8.1-.1.4C8.4 14.3 9.1 13.7 9.9 13.7h2c5.4 0 9.6-2.2 10.8-8.5.1-.3.1-.6.1-.9-.3-.3-.3-.5-.3-.8z"/><path d="M19.8 5.7c-.1.5-.3 1-.5 1.5-1.4 7.2-6.3 9.7-12.5 9.7H4.5L3.1 26h4.5c.7 0 1.3-.5 1.4-1.2l.1-.3.9-5.4.1-.3c.1-.7.7-1.2 1.4-1.2h.9c5.7 0 10.1-2.3 11.4-9 .5-2.7.3-5-1-6.9z"/></svg>
-                  Donar
+                  Donar 🤍
                 </a>
               </div>
             </div>
@@ -392,7 +391,7 @@ export default function SorteoPage() {
                 </>
               )}
             </button>
-            <p className="text-center text-xs mt-3" style={{color:t.muted}}>
+            <p className="text-center text-xs mt-6 px-4" style={{color:t.muted}}>
               Necesario para recuperar los comentarios de tu publicación automáticamente
             </p>
           </div>
@@ -407,7 +406,7 @@ export default function SorteoPage() {
             {/* Subtitle */}
             <div className="flex items-start justify-between mb-6 pt-4">
               <h1 className="font-extrabold leading-none"
-                style={{fontSize:'clamp(2.8rem,11vw,4.5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                key={theme} style={{fontSize:'clamp(2.8rem,11vw,4.5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                 Sorteazos
               </h1>
               <button onClick={disconnect} className="mt-2 text-xs px-3 py-1.5 rounded-lg border transition-colors flex-shrink-0"
@@ -468,7 +467,11 @@ export default function SorteoPage() {
                   )}
                   {comments.length>0&&(
                     <div className="mt-4 flex items-center gap-2 px-4 py-3 rounded-xl text-sm"
-                      style={{background:'rgba(74,222,128,0.08)',border:'1px solid rgba(74,222,128,0.2)',color:'#4ade80'}}>
+                      style={{
+                        background: isDark ? 'rgba(74,222,128,0.08)' : `${t.accentBg}`,
+                        border: isDark ? '1px solid rgba(74,222,128,0.2)' : `1px solid ${t.accentBorder}`,
+                        color: isDark ? '#4ade80' : t.accent,
+                      }}>
                       ✓ <strong>{comments.length} comentarios listos</strong>
                       <button onClick={()=>setComments([])} className="ml-auto text-xs opacity-60 hover:opacity-100">× borrar</button>
                     </div>
@@ -580,8 +583,7 @@ export default function SorteoPage() {
                     textAlign:'center',
                     maxWidth:'100%',
                     marginBottom:'0.75rem',
-                    animation:'winnerBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards, winnerGlow 1.2s ease-out forwards',
-                    textShadow:'0 0 0px rgba(251,191,36,0)',
+                    animation:'winnerBounce 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards',
                   }}>
                     @{winner.username}
                   </div>
