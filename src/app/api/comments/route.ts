@@ -1,24 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Extract media ID from an Instagram post URL
-function extractMediaId(url: string): string | null {
-  // Match /p/CODE/ or /reel/CODE/
+function extractShortcode(url: string): string | null {
   const match = url.match(/\/(p|reel|tv)\/([A-Za-z0-9_-]+)/)
   return match ? match[2] : null
-}
-
-// Convert shortcode to numeric media ID via oEmbed (no token needed)
-async function getMediaIdFromShortcode(shortcode: string): Promise<string | null> {
-  try {
-    const oembedUrl = `https://graph.facebook.com/v19.0/instagram_oembed?url=https://www.instagram.com/p/${shortcode}/&access_token=${process.env.INSTAGRAM_TOKEN}`
-    const res = await fetch(oembedUrl)
-    const data = await res.json()
-    // oEmbed doesn't return numeric ID; use search by URL approach instead
-    if (data.error) return null
-    return data.media_id ?? null
-  } catch {
-    return null
-  }
 }
 
 async function fetchAllComments(mediaId: string, token: string) {
@@ -39,36 +23,31 @@ async function fetchAllComments(mediaId: string, token: string) {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const postUrl = searchParams.get('url')
+  const userToken = searchParams.get('token')
+  const userId = searchParams.get('user_id')
 
   if (!postUrl) {
     return NextResponse.json({ error: 'URL del post requerida' }, { status: 400 })
   }
 
-  const token = process.env.INSTAGRAM_TOKEN
-  if (!token) {
+  // Use user's token if provided, otherwise fall back to server token
+  const token = userToken || process.env.INSTAGRAM_TOKEN
+  const igUserId = userId || process.env.INSTAGRAM_USER_ID
+
+  if (!token || token === 'pending') {
     return NextResponse.json(
-      { error: 'Token de Instagram no configurado. Configura INSTAGRAM_TOKEN en las variables de entorno de Vercel.' },
-      { status: 503 }
+      { error: 'No hay sesión activa. Conecta tu cuenta de Instagram primero.' },
+      { status: 401 }
     )
   }
 
-  const shortcode = extractMediaId(postUrl)
+  const shortcode = extractShortcode(postUrl)
   if (!shortcode) {
-    return NextResponse.json({ error: 'No se pudo extraer el ID del post desde la URL' }, { status: 400 })
+    return NextResponse.json({ error: 'URL de post no válida' }, { status: 400 })
   }
 
   try {
-    // First get the numeric media ID from the shortcode
-    // We use the Business Discovery API: find media by permalink
-    const igUserId = process.env.INSTAGRAM_USER_ID
-    if (!igUserId) {
-      return NextResponse.json(
-        { error: 'INSTAGRAM_USER_ID no configurado en variables de entorno' },
-        { status: 503 }
-      )
-    }
-
-    // Search own media to find the post by shortcode
+    // Search user's media for the post
     const mediaSearchUrl = `https://graph.facebook.com/v19.0/${igUserId}/media?fields=id,shortcode,permalink&limit=50&access_token=${token}`
     const mediaRes = await fetch(mediaSearchUrl)
     const mediaData = await mediaRes.json()
@@ -79,7 +58,6 @@ export async function GET(req: NextRequest) {
 
     let mediaId: string | null = null
 
-    // Try to find in first page
     for (const item of mediaData.data ?? []) {
       if (item.shortcode === shortcode || item.permalink?.includes(shortcode)) {
         mediaId = item.id
@@ -87,7 +65,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // If not found in first page, try next pages
+    // Paginate if not found
     if (!mediaId) {
       let nextUrl = mediaData.paging?.next
       while (nextUrl && !mediaId) {
@@ -105,7 +83,7 @@ export async function GET(req: NextRequest) {
 
     if (!mediaId) {
       return NextResponse.json(
-        { error: 'Post no encontrado. Asegúrate de que el post pertenece a tu cuenta de Instagram Business.' },
+        { error: 'Post no encontrado. Asegúrate de que el post pertenece a tu cuenta.' },
         { status: 404 }
       )
     }
