@@ -701,6 +701,16 @@ function SorteoPageInner() {
               <p><strong style={{color:t.text}}>4. Privacidad.</strong> No almacenamos datos personales. Todo se procesa en tu navegador.</p>
               <p><strong style={{color:t.text}}>5. Uso.</strong> El uso implica la aceptación de estos términos. El servicio puede cambiar sin previo aviso.</p>
             </div>
+            <div className="flex gap-4 mt-5 pt-4" style={{borderTop:`1px solid ${t.border}`}}>
+              <a href="/terminos" target="_blank" rel="noopener noreferrer"
+                className="text-xs underline underline-offset-2" style={{color:t.accent}}>
+                Términos completos →
+              </a>
+              <a href="/privacidad" target="_blank" rel="noopener noreferrer"
+                className="text-xs underline underline-offset-2" style={{color:t.accent}}>
+                Política de privacidad →
+              </a>
+            </div>
           </div>
         </div>
       )}
