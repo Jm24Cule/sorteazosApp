@@ -1,25 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const REDIRECT_URI = 'https://sorteazos-app.vercel.app/api/auth/callback'
-
 export async function GET(req: NextRequest) {
+  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://sorteazos-app.vercel.app'
+  const redirectUri = `${baseUrl}/api/auth/callback`
+
   const { searchParams } = new URL(req.url)
   const code = searchParams.get('code')
   const error = searchParams.get('error')
 
   if (error || !code) {
-    return NextResponse.redirect(
-      `${REDIRECT_URI.replace('/auth/callback', '')}/?auth_error=cancelled`
-    )
+    return NextResponse.redirect(`${baseUrl}/sorteo?auth_error=cancelled`)
   }
 
   const appId = process.env.META_APP_ID
   const appSecret = process.env.META_APP_SECRET
 
   if (!appId || !appSecret) {
-    return NextResponse.redirect(
-      `${REDIRECT_URI.replace('/auth/callback', '')}/?auth_error=config`
-    )
+    return NextResponse.redirect(`${baseUrl}/sorteo?auth_error=config`)
   }
 
   try {
@@ -30,7 +27,7 @@ export async function GET(req: NextRequest) {
       body: new URLSearchParams({
         client_id: appId,
         client_secret: appSecret,
-        redirect_uri: REDIRECT_URI,
+        redirect_uri: redirectUri,
         code,
       }),
     })
@@ -54,13 +51,10 @@ export async function GET(req: NextRequest) {
     let igUserId = ''
     let igToken = longToken
 
-    // Find Instagram business account linked to a page
     if (pagesData.data && pagesData.data.length > 0) {
       for (const page of pagesData.data) {
         if (page.instagram_business_account) {
           igUserId = page.instagram_business_account.id
-
-          // Get page token for Instagram API
           const pageTokenRes = await fetch(
             `https://graph.facebook.com/v19.0/${page.id}?fields=access_token&access_token=${longToken}`
           )
@@ -72,7 +66,6 @@ export async function GET(req: NextRequest) {
     }
 
     if (!igUserId) {
-      // Try direct Instagram user ID
       const meRes = await fetch(
         `https://graph.facebook.com/v19.0/me?fields=id,name&access_token=${longToken}`
       )
@@ -86,8 +79,7 @@ export async function GET(req: NextRequest) {
     )
     const profile = await profileRes.json()
 
-    // 5. Redirect to app with token and profile encoded in URL params
-    const baseUrl = REDIRECT_URI.replace('/auth/callback', '')
+    // 5. Redirect to app with token and profile
     const params = new URLSearchParams({
       token: igToken,
       user_id: igUserId,
@@ -99,9 +91,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${baseUrl}/sorteo?${params.toString()}`)
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Error desconocido'
-    const baseUrl = REDIRECT_URI.replace('/auth/callback', '')
-    return NextResponse.redirect(
-      `${baseUrl}/sorteo?auth_error=${encodeURIComponent(msg)}`
-    )
+    return NextResponse.redirect(`${baseUrl}/sorteo?auth_error=${encodeURIComponent(msg)}`)
   }
 }
