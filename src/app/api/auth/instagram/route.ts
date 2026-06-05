@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const appId = process.env.META_APP_ID
-  const redirectUri = process.env.NEXT_PUBLIC_URL
-    ? `${process.env.NEXT_PUBLIC_URL}/auth/callback`
-    : 'https://sorteazos-app.vercel.app/auth/callback'
+  const redirectUri = 'https://sorteazos-app.vercel.app/api/auth/callback'
 
   if (!appId) {
     return NextResponse.json({ error: 'META_APP_ID no configurado' }, { status: 503 })
