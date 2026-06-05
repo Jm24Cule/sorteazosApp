@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const REDIRECT_URI = process.env.NEXT_PUBLIC_URL
-  ? `${process.env.NEXT_PUBLIC_URL}/auth/callback`
-  : 'https://sorteazos-app.vercel.app/auth/callback'
+const REDIRECT_URI = 'https://sorteazos-app.vercel.app/api/auth/callback'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
