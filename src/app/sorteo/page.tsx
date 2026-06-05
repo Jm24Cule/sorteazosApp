@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect, Suspense } from 'react'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface Comment { username: string; text: string; timestamp?: string }
@@ -14,32 +15,8 @@ interface Filters {
 }
 interface Participant { username: string; comment: Comment }
 interface IGProfile { username: string; name: string; avatar: string }
-type Phase = 'welcome' | 'setup' | 'rolling' | 'winner'
+type Phase = 'welcome' | 'setup'
 type Theme = 'dark' | 'light'
-
-/* ─── Mock data ──────────────────────────────────────────── */
-const MOCK_PROFILE: IGProfile = {
-  username: 'la_nana_de_nala',
-  name: 'La Ñañá de Nala',
-  avatar: '/nana.png',
-}
-
-const MOCK_COMMENTS: Comment[] = [
-  { username: 'maria_garcia', text: '¡Participo! Menciono a @laura_perez y @ana_martin 😍 #sorteazos' },
-  { username: 'carlos_ruiz', text: 'Me apunto! @pedro_sanchez y @jose_lopez quiero ganar' },
-  { username: 'lucia_fernandez', text: '@sofia_gomez @elena_diaz participamos juntas! ❤️' },
-  { username: 'david_moreno', text: 'Quiero ganar! @marta_jimenez @pablo_hernandez' },
-  { username: 'sara_lopez', text: '@carmen_torres y @pilar_ramirez os menciono para participar!' },
-  { username: 'miguel_gonzalez', text: 'Participooo @rosa_martinez @jorge_alvarez 🎉' },
-  { username: 'isabel_romero', text: '@beatriz_navarro @cristina_molina me gustaría ganar!' },
-  { username: 'antonio_gutierrez', text: 'A ver si hay suerte @francisco_ramos @teresa_iglesias' },
-  { username: 'raquel_santos', text: '@victoria_castillo @alicia_ortega participamos!' },
-  { username: 'pablo_vargas', text: 'Menciono a @roberto_morales solo él 🙈' }, // will be excluded (1 mention)
-  { username: 'maria_garcia', text: 'Doble comentario de maria, debe ser excluido' }, // duplicate
-  { username: 'nuria_campos', text: '@diego_reyes @adriana_vega apuntadas!' },
-  { username: 'fernando_rueda', text: '@monica_sierra @rafael_cano vamos a ver!' },
-  { username: 'patricia_vidal', text: '@alejandro_mora @silvia_delgado participamos 🌟' },
-]
 
 /* ─── Helpers ────────────────────────────────────────────── */
 function parseComments(raw: string): Comment[] {
@@ -159,21 +136,20 @@ function Toggle({ checked, onChange, label, desc, theme, children }: {
   )
 }
 
-/* ─── Main ───────────────────────────────────────────────── */
-export default function SorteoPage() {
+/* ─── Main (inner) ───────────────────────────────────────── */
+function SorteoPageInner() {
   const [theme, setTheme] = useState<Theme>('dark')
   const isDark = theme === 'dark'
+  const searchParams = useSearchParams()
 
   const [phase, setPhase] = useState<Phase>('welcome')
   const [profile, setProfile] = useState<IGProfile | null>(null)
   const [connecting, setConnecting] = useState(false)
 
   const [comments, setComments] = useState<Comment[]>([])
-  const [rawText, setRawText] = useState('')
   const [postUrl, setPostUrl] = useState('')
   const [loadingApi, setLoadingApi] = useState(false)
   const [apiError, setApiError] = useState('')
-  const [importMode, setImportMode] = useState<'url'|'paste'|'file'>('url')
 
   const [filters, setFilters] = useState<Filters>({
     minMentions:2, requireDistinctMentions:true,
@@ -204,12 +180,9 @@ export default function SorteoPage() {
     muted: isDark?'#71717a':'#71717a',
     inputBg: isDark?'#18181b':'#f4f4f5',
     inputBorder: isDark?'#3f3f46':'#d4d4d8',
-    // Accent palette: dark=orange/gold, light=purple/teal
     accent: isDark?'#f97316':'#7c3aed',
     accent2: isDark?'#fb923c':'#6d28d9',
     gold: isDark?'#fbbf24':'#0891b2',
-    gradStart: isDark?'#f97316':'#7c3aed',
-    gradEnd: isDark?'#fbbf24':'#0891b2',
     grad: isDark
       ? 'linear-gradient(135deg,#f97316 0%,#fbbf24 50%,#f97316 100%)'
       : 'linear-gradient(135deg,#7c3aed 0%,#0891b2 50%,#7c3aed 100%)',
@@ -220,18 +193,44 @@ export default function SorteoPage() {
   }
   const inp = { background:t.inputBg, border:`1px solid ${t.inputBorder}`, color:t.text }
 
-  /* ── Simulate Instagram connect ── */
+  /* ── Read OAuth result from URL params ── */
+  useEffect(() => {
+    const token = searchParams.get('token')
+    const username = searchParams.get('username')
+    const name = searchParams.get('name')
+    const avatar = searchParams.get('avatar')
+    const userId = searchParams.get('user_id')
+    const authError = searchParams.get('auth_error')
+
+    if (authError) {
+      const msg = authError === 'cancelled'
+        ? 'Conexión cancelada.'
+        : authError === 'config'
+        ? 'Error de configuración del servidor.'
+        : `Error al conectar: ${authError}`
+      setGlobalError(msg)
+      window.history.replaceState({}, '', '/sorteo')
+      return
+    }
+
+    if (token && username) {
+      setProfile({ username, name: name || username, avatar: avatar || '' })
+      sessionStorage.setItem('ig_token', token)
+      sessionStorage.setItem('ig_user_id', userId || '')
+      setPhase('setup')
+      window.history.replaceState({}, '', '/sorteo')
+    }
+  }, [searchParams])
+
+  /* ── Instagram OAuth ── */
   const connectInstagram = useCallback(() => {
     setConnecting(true)
-    setTimeout(() => {
-      setProfile(MOCK_PROFILE)
-      setComments(MOCK_COMMENTS)
-      setConnecting(false)
-      setPhase('setup')
-    }, 1800)
+    window.location.href = '/api/auth/instagram'
   }, [])
 
   const disconnect = useCallback(() => {
+    sessionStorage.removeItem('ig_token')
+    sessionStorage.removeItem('ig_user_id')
     setProfile(null)
     setComments([])
     setPhase('welcome')
@@ -241,41 +240,24 @@ export default function SorteoPage() {
     setGlobalError('')
   }, [])
 
-  /* ── Load comments ── */
+  /* ── Load comments via API ── */
   const loadFromApi = useCallback(async () => {
     if (!postUrl.trim()) { setApiError('Introduce la URL del post'); return }
     setLoadingApi(true); setApiError('')
     try {
-      const res = await fetch(`/api/comments?url=${encodeURIComponent(postUrl)}`)
+      const token = sessionStorage.getItem('ig_token') || ''
+      const userId = sessionStorage.getItem('ig_user_id') || ''
+      const res = await fetch(`/api/comments?url=${encodeURIComponent(postUrl)}&token=${encodeURIComponent(token)}&user_id=${encodeURIComponent(userId)}`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error desconocido')
       setComments(data.comments.map((c:{username:string;text:string;timestamp?:string})=>({...c,username:c.username.toLowerCase()})))
       setApiError('')
     } catch(e:unknown) {
       const msg = e instanceof Error ? e.message : 'Error al cargar'
-      if (msg.toLowerCase().includes('oauth')||msg.toLowerCase().includes('token')||msg.toLowerCase().includes('access')) {
-        setApiError('Token no configurado o expirado. Usa "Pegar texto" o "Archivo".')
-      } else { setApiError(msg) }
+      setApiError(msg)
     }
     finally { setLoadingApi(false) }
   }, [postUrl])
-
-  const loadFromPaste = useCallback(() => {
-    const p = parseComments(rawText)
-    if(!p.length){setGlobalError('No se encontraron comentarios válidos');return}
-    setComments(p); setGlobalError('')
-  }, [rawText])
-
-  const loadFromFile = useCallback((e:React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; if(!file)return
-    const reader = new FileReader()
-    reader.onload = ev => {
-      const p = parseComments(ev.target?.result as string)
-      if(!p.length){setGlobalError('No se encontraron comentarios válidos');return}
-      setComments(p); setGlobalError('')
-    }
-    reader.readAsText(file)
-  }, [])
 
   /* ── Sorteo ── */
   const runDrum = useCallback((pool:Participant[], excluded:string[]) => {
@@ -318,9 +300,6 @@ export default function SorteoPage() {
   /* ─── RENDER ─────────────────────────────────────────── */
   return (
     <div className="min-h-screen transition-colors duration-300" style={{background:t.bg,color:t.text}}>
-
-
-
       <div className="max-w-2xl mx-auto px-5 py-8 pb-32">
 
         {/* ══════════════════════════════════════════════ */}
@@ -336,7 +315,7 @@ export default function SorteoPage() {
                 Sorteazos
               </h2>
               <p className="text-lg" style={{color:t.muted}}>
-                Sorteos de Instagram{' '}
+                Sorteos de Instagram
               </p>
             </div>
 
@@ -351,7 +330,7 @@ export default function SorteoPage() {
             {/* Info card */}
             <div className="rounded-2xl border p-6 mb-6" style={{background:t.surface,borderColor:t.border}}>
               <p className="text-base leading-relaxed mb-5" style={{color:t.muted}}>
-                Crea sorteos en Instagram de forma <span style={{color:t.text,fontWeight:600}}>justa y transparente</span>. Filtra participantes por menciones, hashtags y más. Si el ganador no cumple las bases, haz <span style={{color:'#f97316',fontWeight:700}}>Reroll</span> al instante.
+                Crea sorteos en Instagram de forma <span style={{color:t.text,fontWeight:600}}>justa y transparente</span>. Filtra participantes por menciones, hashtags y más. Si el ganador no cumple las bases, haz <span style={{color:t.accent,fontWeight:700}}>Reroll</span> al instante.
               </p>
               {/* Donation */}
               <div className="rounded-xl p-4 flex items-center gap-4"
@@ -368,6 +347,14 @@ export default function SorteoPage() {
                 </a>
               </div>
             </div>
+
+            {/* Global error (shown on welcome if auth failed) */}
+            {globalError&&(
+              <div className="mb-5 px-4 py-3 rounded-xl text-sm border"
+                style={{background:'rgba(248,113,113,0.08)',borderColor:'rgba(248,113,113,0.3)',color:'#f87171'}}>
+                ⚠️ {globalError}
+              </div>
+            )}
 
             {/* Connect button */}
             <button onClick={connectInstagram} disabled={connecting}
@@ -393,9 +380,6 @@ export default function SorteoPage() {
             <p className="text-center text-xs mt-6 px-4" style={{color:t.muted}}>
               Necesario para recuperar los comentarios de tu publicación. Nunca almacenamos datos.
             </p>
-            <p className="text-center text-xs mt-6 px-4" style={{color:t.muted}}>
-              "Añade esta app a tu pantalla de inicio" {/* METER AQUI HIPERVINCULO CON "COMPARTIR" AL ESCRITORIO" */}
-            </p>
           </div>
         )}
 
@@ -405,10 +389,9 @@ export default function SorteoPage() {
         {phase==='setup'&&(
           <div style={{animation:'slideUp 0.4s ease forwards'}}>
 
-            {/* Subtitle */}
             <div className="flex items-start justify-between mb-6 pt-4">
               <h1 className="font-extrabold leading-none"
-                key={theme} style={{fontSize:'clamp(2.8rem,11vw,4.5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                key={theme} style={{fontFamily:"'Outfit', sans-serif",fontSize:'clamp(2.8rem,11vw,4.5rem)',letterSpacing:'-3px',background:t.grad,WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                 Sorteazos
               </h1>
               <button onClick={disconnect} className="mt-2 text-xs px-3 py-1.5 rounded-lg border transition-colors flex-shrink-0"
@@ -421,9 +404,16 @@ export default function SorteoPage() {
             {profile&&(
               <div className="rounded-2xl border p-4 mb-6 flex items-center gap-4"
                 style={{background:t.surface,borderColor:t.border}}>
-                <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0" style={{border:`2.5px solid ${t.accent}`}}>
-                  <Image src={profile.avatar} alt={profile.name} width={56} height={56} className="object-cover w-full h-full"/>
-                </div>
+                {profile.avatar ? (
+                  <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0" style={{border:`2.5px solid ${t.accent}`}}>
+                    <Image src={profile.avatar} alt={profile.name} width={56} height={56} className="object-cover w-full h-full" unoptimized/>
+                  </div>
+                ) : (
+                  <div className="w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center text-2xl font-bold"
+                    style={{border:`2.5px solid ${t.accent}`,background:t.surface2,color:t.accent}}>
+                    {profile.username[0].toUpperCase()}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-base" style={{color:t.text}}>{profile.name}</div>
                   <div className="text-sm font-mono" style={{color:t.accent}}>@{profile.username}</div>
@@ -470,9 +460,9 @@ export default function SorteoPage() {
                   {comments.length>0&&(
                     <div className="mt-4 flex items-center gap-2 px-4 py-3 rounded-xl text-sm"
                       style={{
-                        background: isDark ? 'rgba(74,222,128,0.08)' : `${t.accentBg}`,
-                        border: isDark ? '1px solid rgba(74,222,128,0.2)' : `1px solid ${t.accentBorder}`,
-                        color: isDark ? '#4ade80' : t.accent,
+                        background: isDark?'rgba(74,222,128,0.08)':t.accentBg,
+                        border: isDark?'1px solid rgba(74,222,128,0.2)':`1px solid ${t.accentBorder}`,
+                        color: isDark?'#4ade80':t.accent,
                       }}>
                       ✓ <strong>{comments.length} comentarios listos</strong>
                       <button onClick={()=>setComments([])} className="ml-auto text-xs opacity-60 hover:opacity-100">× borrar</button>
@@ -511,7 +501,6 @@ export default function SorteoPage() {
                       </div>
                       <Toggle theme={theme} checked={filters.excludeDuplicates} onChange={v=>setFilters(f=>({...f,excludeDuplicates:v}))}
                         label="Excluir duplicados" desc="Solo cuenta el primer comentario por usuario"/>
-
                       <Toggle theme={theme} checked={filters.requireDistinctMentions} onChange={v=>setFilters(f=>({...f,requireDistinctMentions:v}))}
                         label="Menciones distintas" desc="No vale mencionar al mismo usuario dos veces"/>
                       <Toggle theme={theme} checked={filters.requireFollow} onChange={v=>setFilters(f=>({...f,requireFollow:v}))}
@@ -532,7 +521,6 @@ export default function SorteoPage() {
                   )}
                 </section>
 
-                {/* Sortear button */}
                 {comments.length>0&&(
                   <button onClick={startSorteo}
                     className="w-full py-6 rounded-2xl text-xl font-extrabold tracking-tight transition-all hover:-translate-y-1 active:translate-y-0"
@@ -577,7 +565,7 @@ export default function SorteoPage() {
                   <div className="w-full px-4 overflow-hidden" style={{
                     color:t.winnerColor,
                     fontFamily:'"Space Grotesk", sans-serif',
-                    fontWeight: 400,
+                    fontWeight:400,
                     fontSize:'clamp(1.8rem, 7vw, 3.2rem)',
                     letterSpacing:'-0.5px',
                     whiteSpace:'nowrap',
@@ -663,7 +651,6 @@ export default function SorteoPage() {
         style={{background:isDark?'rgba(28,28,30,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderTop:`1px solid ${t.border}`}}>
         <div className="max-w-2xl mx-auto px-5 py-4 sm:py-5">
           <div className="flex items-center justify-between gap-4">
-            {/* Left — Profiles */}
             <div className="flex items-center gap-3 sm:gap-5">
               {[
                 {href:'https://www.instagram.com/jagarcia95',src:'/juan.jpeg',handle:'@jagarcia95'},
@@ -678,7 +665,6 @@ export default function SorteoPage() {
                 </a>
               ))}
             </div>
-            {/* Right — T&C + copyright + theme */}
             <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
               <button onClick={()=>setShowTerms(v=>!v)}
                 className="text-xs sm:text-sm underline underline-offset-2 transition-colors hover:opacity-80"
@@ -719,5 +705,13 @@ export default function SorteoPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function SorteoPage() {
+  return (
+    <Suspense fallback={<div style={{minHeight:'100vh',background:'#1c1c1e'}}/>}>
+      <SorteoPageInner />
+    </Suspense>
   )
 }
