@@ -391,10 +391,10 @@ export default function SorteoPage() {
               )}
             </button>
             <p className="text-center text-xs mt-6 px-4" style={{color:t.muted}}>
-              Necesario para recuperar los comentarios de tu publicación. No almacenamos datos, esto es obligatorio para el funcionamiento de la app.
+              Necesario para recuperar los comentarios de tu publicación. Nunca almacenamos datos.
             </p>
             <p className="text-center text-xs mt-6 px-4" style={{color:t.muted}}>
-              Puedes agregar esta app a tu pantalla de inicio para usarlo como si fuera una app nativa, ¿no sabes cómo? "Aquí" está explicado.
+              "Añade esta app a tu pantalla de inicio" {/* METER AQUI HIPERVINCULO CON "COMPARTIR" AL ESCRITORIO" */}
             </p>
           </div>
         )}
