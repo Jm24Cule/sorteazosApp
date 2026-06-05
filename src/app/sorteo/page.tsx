@@ -336,14 +336,13 @@ export default function SorteoPage() {
                 Sorteazos
               </h2>
               <p className="text-lg" style={{color:t.muted}}>
-                Sorteos de Instagram —{' '}
-                <span style={{color:t.text,fontWeight:700}}>gratis, sin registro, sin límites.</span>
+                Sorteos de Instagram{' '}
               </p>
             </div>
 
             {/* Feature badges */}
             <div className="flex flex-wrap justify-center gap-2 mb-8">
-              {['✅ 100% Gratuito','🚫 Sin registro','♾️ Sin límites','🔒 Sin almacenamiento'].map(b=>(
+              {['✅ 100% Gratis','🚫 Sin registro','♾️ Sin límites'].map(b=>(
                 <span key={b} className="text-xs font-semibold px-3 py-1.5 rounded-full"
                   style={{background:t.surface2,border:`1px solid ${t.border}`,color:t.text}}>{b}</span>
               ))}
@@ -392,7 +391,10 @@ export default function SorteoPage() {
               )}
             </button>
             <p className="text-center text-xs mt-6 px-4" style={{color:t.muted}}>
-              Necesario para recuperar los comentarios de tu publicación automáticamente
+              Necesario para recuperar los comentarios de tu publicación. No almacenamos datos, esto es obligatorio para el funcionamiento de la app.
+            </p>
+            <p className="text-center text-xs mt-6 px-4" style={{color:t.muted}}>
+              Puedes agregar esta app a tu pantalla de inicio para usarlo como si fuera una app nativa, ¿no sabes cómo? "Aquí" está explicado.
             </p>
           </div>
         )}
