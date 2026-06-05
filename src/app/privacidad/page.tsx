@@ -22,7 +22,7 @@ export default function PrivacidadPage() {
 
           <section>
             <h2 style={{ color: '#fafafa', fontSize: 18, fontWeight: 700, marginBottom: 12 }}>1. Quiénes somos</h2>
-            <p>Sorteazos es una herramienta web gratuita para realizar sorteos en Instagram, disponible en <strong style={{color:'#f97316'}}>sorteazos-app.vercel.app</strong>. Ha sido desarrollada por Juan María García como proyecto personal sin ánimo de lucro.</p>
+            <p>Sorteazos es una herramienta web gratuita para realizar sorteos en Instagram, disponible en <strong style={{color:'#f97316'}}>sorteazos.es</strong>. Ha sido desarrollada por Juan María García como proyecto personal sin ánimo de lucro.</p>
           </section>
 
           <section>
