@@ -2,18 +2,14 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const appId = process.env.META_APP_ID
-  const redirectUri = 'https://sorteazos-app.vercel.app/api/auth/callback'
+  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://sorteazos-app.vercel.app'
+  const redirectUri = `${baseUrl}/api/auth/callback`
 
   if (!appId) {
     return NextResponse.json({ error: 'META_APP_ID no configurado' }, { status: 503 })
   }
 
-  const scope = [
-    'instagram_basic',
-    'instagram_manage_comments',
-    'pages_show_list',
-    'pages_read_engagement',
-  ].join(',')
+  const scope = ['public_profile', 'email'].join(',')
 
   const url = new URL('https://www.facebook.com/v19.0/dialog/oauth')
   url.searchParams.set('client_id', appId)
